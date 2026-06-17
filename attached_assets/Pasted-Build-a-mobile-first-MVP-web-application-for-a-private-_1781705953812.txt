@@ -1,0 +1,138 @@
+Build a mobile-first MVP web application for a private educational video platform.
+
+The goal is to create a simple working demo where I can upload lecture videos, and other users can open the platform on their phones, log in, browse lectures, and watch the videos.
+
+This is not a full production product yet. First build a clean, stable MVP demo that works well on mobile phones. The app should feel like a simple mobile video application.
+
+Core concept:
+
+* Admin uploads lecture videos from a computer.
+* Users open the platform by link on their phone.
+* Users log in and watch available lectures.
+* The interface must be mobile-first and responsive.
+* Later the project should be easy to improve into a PWA or a full app.
+
+Main requirements:
+
+1. Mobile-first design
+
+* Design primarily for smartphone screens.
+* The layout should work well on iPhone and Android browsers.
+* Use large buttons, readable text, simple cards, and clean spacing.
+* The video player should fit the phone screen correctly.
+* The lecture catalog should look like a mobile feed or mobile course library.
+* Also make it usable on desktop, but mobile is the priority.
+
+2. Authentication
+
+* Add simple login and registration with email and password.
+* There should be two user roles:
+
+  * admin
+  * viewer
+* Admin can upload, edit, publish, unpublish, and delete videos.
+* Viewer can only see and watch published videos.
+* Unauthenticated users should not access the lecture catalog or video pages.
+
+3. Admin video upload
+   Create an admin dashboard with a simple upload form.
+
+The form should include:
+
+* video file
+* lecture title
+* short description
+* lecturer name
+* course/category name
+* publication status: draft or published
+
+Support common video formats:
+
+* mp4
+* mov
+* webm
+
+Validate file type and file size.
+
+For the MVP, choose the simplest reliable storage approach that works in Replit. If external storage is needed, use Supabase Storage or another simple object storage solution. Do not hard-code secret keys. Use environment variables.
+
+4. Lecture catalog for users
+   Create a mobile-friendly lecture list.
+
+Each lecture card should show:
+
+* title
+* short description
+* lecturer name
+* course/category
+* upload date
+
+Add:
+
+* search by title
+* filter by course/category if it is simple to implement
+* newest lectures first
+
+5. Video viewing page
+   Each lecture should have a separate page with:
+
+* HTML5 video player
+* title
+* description
+* lecturer
+* course/category
+* upload date
+
+The video must play directly in the browser and should not require downloading the file.
+
+6. Admin dashboard
+   The admin dashboard should include:
+
+* list of all uploaded videos
+* button to upload a new video
+* edit video information
+* delete video
+* publish/unpublish video
+
+7. Database
+   Create a simple database structure.
+
+Minimum tables:
+
+* users: id, email, role, created_at
+* videos: id, title, description, lecturer, category, video_url, status, created_at, updated_at, uploaded_by
+
+Optional if easy:
+
+* video_views: id, video_id, user_id, viewed_at
+
+8. PWA readiness
+   Do not overcomplicate the first version, but structure the project so it can later become a PWA.
+
+If simple, add:
+
+* app manifest
+* mobile app name
+* icon placeholder
+* basic installability support
+
+But the main priority is a working mobile web demo.
+
+9. Style
+   The design should be serious, clean, and educational.
+   Do not make it look like a social network.
+   Do not add likes, comments, subscriptions, recommendations, or public profiles.
+   This is a private lecture video library.
+
+10. Technical requirements
+
+* Generate the complete working code.
+* Use a clear file structure.
+* Add setup instructions.
+* Explain where to add environment variables in Replit.
+* Explain how to create the first admin user.
+* Prioritize a working MVP over advanced features.
+* After building the MVP, suggest the next improvements separately.
+
+Important:
+Start with the simplest version that works. The first goal is to demonstrate the idea: upload lecture → publish lecture → user opens on phone → user watches video.

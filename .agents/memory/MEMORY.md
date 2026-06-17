@@ -1,0 +1,2 @@
+- [Clerk Expo version fix](clerk-expo-versions.md) — @clerk/expo@3.x (not 2.x) is required for web to work; 2.x uses @clerk/shared@3.x which is missing critical APIs.
+- [Clerk pnpm patch cleanup](clerk-pnpm-patches.md) — patchedDependencies must be removed from both package.json AND pnpm-workspace.yaml; stale entries break pnpm install even after lockfile deletion.
