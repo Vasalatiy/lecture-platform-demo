@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Lecture Platform icon">
+  <rect width="512" height="512" rx="96" fill="#1f5f5b"/>
+  <path d="M128 148c0-24 20-44 44-44h168c24 0 44 20 44 44v216c0 24-20 44-44 44H172c-24 0-44-20-44-44V148Z" fill="#f7f4ed"/>
+  <path d="M222 196v120l96-60-96-60Z" fill="#1f5f5b"/>
+  <path d="M176 128h160" stroke="#d9a441" stroke-width="24" stroke-linecap="round"/>
+</svg>

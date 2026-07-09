@@ -1,0 +1,25 @@
+diff --git a/dist/loadClerkJsScript.js b/dist/loadClerkJsScript.js
+index aa890c18af7275576134fb28ed2879181c0029a7..dd7fd019a001ecddcd7f04abdf19d5b9a35ab95f 100644
+--- a/dist/loadClerkJsScript.js
++++ b/dist/loadClerkJsScript.js
+@@ -246,6 +246,7 @@ exports.clerkUIScriptUrl = clerkUIScriptUrl;
+ exports.loadClerkJSScript = loadClerkJSScript;
+ exports.loadClerkJsScript = loadClerkJsScript;
+ exports.loadClerkUIScript = loadClerkUIScript;
++exports.loadClerkUiScript = loadClerkUIScript;
+ exports.setClerkJSLoadingErrorPackageName = setClerkJSLoadingErrorPackageName;
+ exports.setClerkJsLoadingErrorPackageName = setClerkJsLoadingErrorPackageName;
+ //# sourceMappingURL=loadClerkJsScript.js.map
+\ No newline at end of file
+diff --git a/dist/loadClerkJsScript.mjs b/dist/loadClerkJsScript.mjs
+index 34d2c503165089741fd38de93af05ee0f0202641..531e0e8b08728e50e8fe0edae6e9272dc5d5afca 100644
+--- a/dist/loadClerkJsScript.mjs
++++ b/dist/loadClerkJsScript.mjs
+@@ -235,5 +235,6 @@ const buildClerkJsScriptAttributes = buildClerkJSScriptAttributes;
+ const setClerkJsLoadingErrorPackageName = setClerkJSLoadingErrorPackageName;
+ 
+ //#endregion
+-export { buildClerkJSScriptAttributes, buildClerkJsScriptAttributes, buildClerkUIScriptAttributes, buildScriptHost, clerkJSScriptUrl, clerkJsScriptUrl, clerkUIScriptUrl, loadClerkJSScript, loadClerkJsScript, loadClerkUIScript, setClerkJSLoadingErrorPackageName, setClerkJsLoadingErrorPackageName };
++export { buildClerkJSScriptAttributes, buildClerkJsScriptAttributes, buildClerkUIScriptAttributes, buildScriptHost, clerkJSScriptUrl, clerkJsScriptUrl, clerkUIScriptUrl, loadClerkJSScript, loadClerkJsScript, loadClerkUIScript, setClerkJSLoadingErrorPackageName, setClerkJsLoadingErrorPackageName, loadClerkUiScript };
++const loadClerkUiScript = loadClerkUIScript;
+ //# sourceMappingURL=loadClerkJsScript.mjs.map
