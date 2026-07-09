@@ -1,14 +1,8 @@
 import type { ReactNode } from "react";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { BookOpen, LayoutDashboard, LogIn, LogOut } from "lucide-react";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { Link, useRouter } from "../lib/router";
-import { AuthDiagnostics } from "./AuthDiagnostics";
-
-const navItems = [
-  { href: "/lectures", label: "Lectures", icon: BookOpen },
-  { href: "/admin", label: "Admin", icon: LayoutDashboard },
-  { href: "/login", label: "Login", icon: LogIn },
-];
 
 export function AppShell({
   children,
@@ -22,7 +16,16 @@ export function AppShell({
   const { path } = useRouter();
   const { isLoaded, isSignedIn, signOut } = useAuth();
   const { user } = useUser();
+  const currentUser = useCurrentUser(Boolean(isLoaded && isSignedIn));
   const location = path.split(/[?#]/, 1)[0];
+  const showAccountEmail = location === "/admin" || location === "/debug-auth";
+  const navItems = [
+    { href: "/lectures", label: "Видео", icon: BookOpen },
+    ...(currentUser.data?.role === "admin"
+      ? [{ href: "/admin", label: "Администратор", icon: LayoutDashboard }]
+      : []),
+    ...(!isSignedIn ? [{ href: "/login", label: "Войти", icon: LogIn }] : []),
+  ];
 
   return (
     <div className="app-shell">
@@ -30,20 +33,21 @@ export function AppShell({
         <div>
           {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
           <h1>{title}</h1>
-          <AuthDiagnostics />
         </div>
         {isLoaded && isSignedIn ? (
           <div className="user-strip">
-            <span>{user?.primaryEmailAddress?.emailAddress ?? "Signed in"}</span>
+            {showAccountEmail && user?.primaryEmailAddress?.emailAddress ? (
+              <span>Вы вошли как: {user.primaryEmailAddress.emailAddress}</span>
+            ) : null}
             <button className="icon-button" type="button" onClick={() => void signOut()}>
               <LogOut aria-hidden="true" size={18} />
-              <span>Log out</span>
+              <span>Выйти</span>
             </button>
           </div>
         ) : null}
       </header>
       <main className="page-content">{children}</main>
-      <nav className="bottom-nav" aria-label="Primary navigation">
+      <nav className="bottom-nav" aria-label="Основная навигация">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = location === item.href || location.startsWith(`${item.href}/`);

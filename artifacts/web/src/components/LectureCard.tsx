@@ -10,7 +10,6 @@ export function LectureCard({ lecture }: { lecture: Lecture }) {
         <span>{lecture.category}</span>
       </div>
       <div className="card-body">
-        <p className="category-label">{lecture.category}</p>
         <h2>{lecture.title}</h2>
         <p className="card-description">{lecture.description}</p>
         <div className="metadata-row">
@@ -24,7 +23,7 @@ export function LectureCard({ lecture }: { lecture: Lecture }) {
           </span>
         </div>
         <Link href={`/lectures/${lecture.id}`} className="primary-link">
-          Open lecture
+          {lecture.videoUrl ? "Смотреть видео" : "Открыть материал"}
           <ChevronRight aria-hidden="true" size={18} />
         </Link>
       </div>

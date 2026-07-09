@@ -6,11 +6,11 @@ import {
   deleteLecture,
   requestUploadUrl,
   updateLectureStatus,
+  ApiError,
   type Lecture,
   type LectureInput,
 } from "../api/client";
 import { AppShell } from "../components/AppShell";
-import { HealthBadge } from "../components/HealthBadge";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useLectures } from "../hooks/useLectures";
 import { useVideoStats } from "../hooks/useVideoStats";
@@ -26,7 +26,10 @@ const emptyForm: LectureInput = {
 };
 
 function messageFrom(error: unknown): string {
-  return error instanceof Error ? error.message : "Something went wrong.";
+  if (error instanceof ApiError) {
+    return "Не удалось выполнить действие. Попробуйте ещё раз.";
+  }
+  return error instanceof Error ? error.message : "Произошла ошибка.";
 }
 
 export function AdminPage() {
@@ -61,7 +64,7 @@ export function AdminPage() {
       };
 
       if (!trimmed.title || !trimmed.lecturer || !trimmed.category) {
-        throw new Error("Title, lecturer, and category are required.");
+        throw new Error("Укажите название видео, автора материала и раздел.");
       }
 
       let videoUrl = trimmed.videoUrl;
@@ -82,8 +85,8 @@ export function AdminPage() {
     async onSuccess(created) {
       setMessage(
         created.videoUrl
-          ? `Created "${created.title}" with uploaded video.`
-          : `Created metadata-only lecture "${created.title}". Add video storage later before playback.`,
+          ? `Материал «${created.title}» создан, видео загружено.`
+          : `Материал «${created.title}» создан без видео. Его можно добавить позже.`,
       );
       setError(null);
       setForm(emptyForm);
@@ -110,7 +113,7 @@ export function AdminPage() {
   const deleteMutation = useMutation({
     mutationFn: deleteLecture,
     async onSuccess() {
-      setMessage("Lecture deleted.");
+      setMessage("Материал удалён.");
       setError(null);
       await refreshAdminData();
     },
@@ -132,29 +135,28 @@ export function AdminPage() {
 
   if (user.isLoading) {
     return (
-      <AppShell eyebrow="Admin workspace" title="Checking access">
-        <div className="empty-state">Loading your backend profile from `/api/auth/me`...</div>
+      <AppShell eyebrow="Панель администратора" title="Проверяем доступ">
+        <div className="empty-state">Загружаем профиль администратора...</div>
       </AppShell>
     );
   }
 
   if (!isAdmin) {
     return (
-      <AppShell eyebrow="Admin workspace" title="Admin access required">
+      <AppShell eyebrow="Панель администратора" title="Требуется доступ администратора">
         <section className="admin-summary">
-          <HealthBadge />
           <div>
-            <strong>{user.data ? "Viewer account" : "Backend profile unavailable"}</strong>
+            <strong>{user.data ? "Обычная учётная запись" : "Профиль недоступен"}</strong>
             <p>
               {user.data
-                ? "Your authenticated backend profile is not an admin. The API also enforces this on protected admin routes."
-                : "The browser is signed in with Clerk, but `/api/auth/me` did not return a usable profile yet."}
+                ? "У этой учётной записи нет прав администратора."
+                : "Вход выполнен, но профиль пользователя пока не получен."}
             </p>
           </div>
         </section>
         {user.error ? (
           <div className="notice warning">
-            `/api/auth/me` returned an error. Confirm the Clerk token is accepted by the API server.
+            Не удалось проверить права доступа. Попробуйте войти ещё раз.
           </div>
         ) : null}
       </AppShell>
@@ -162,95 +164,90 @@ export function AdminPage() {
   }
 
   return (
-    <AppShell eyebrow="Admin workspace" title="Lecture dashboard">
+    <AppShell eyebrow="Школа ухода за колостомой" title="Панель администратора">
       <section className="admin-summary">
-        <HealthBadge />
         <div>
-          <strong>Backend admin session detected</strong>
-          <p>Create lecture records in Neon. File upload uses local development storage or configured object storage.</p>
+          <p>
+            Здесь можно добавлять, загружать и публиковать обучающие материалы для
+            пациентов.
+          </p>
         </div>
       </section>
 
-      <section className="stats-grid" aria-label="Video statistics">
+      <section className="stats-grid" aria-label="Статистика видео">
         <div>
           <strong>{stats.data?.total ?? "-"}</strong>
-          <span>Total</span>
+          <span>Всего</span>
         </div>
         <div>
           <strong>{stats.data?.published ?? "-"}</strong>
-          <span>Published</span>
+          <span>Опубликовано</span>
         </div>
         <div>
           <strong>{stats.data?.draft ?? "-"}</strong>
-          <span>Drafts</span>
+          <span>Черновики</span>
         </div>
       </section>
 
       <form className="admin-form" onSubmit={onSubmit}>
+        <h2>Добавить обучающий материал</h2>
         <div className="notice">
-          Metadata-only creation is supported. Select a video file when the API server has local storage or object storage configured.
+          Выберите MP4, WebM или MOV. Можно оставить поле пустым и прикрепить видео
+          позже.
         </div>
         <label className="field">
-          <span>Title</span>
+          <span>Название видео</span>
           <input
             value={form.title}
             onChange={(event) => updateField("title", event.target.value)}
-            placeholder="Lecture title"
+            placeholder="Название обучающего видео"
             required
           />
         </label>
         <label className="field">
-          <span>Description</span>
+          <span>Описание для пациента</span>
           <textarea
             value={form.description}
             onChange={(event) => updateField("description", event.target.value)}
-            placeholder="Short lecture description"
+            placeholder="Кратко расскажите, чему поможет этот материал"
             rows={4}
           />
         </label>
         <label className="field">
-          <span>Lecturer</span>
+          <span>Специалист / автор материала</span>
           <input
             value={form.lecturer}
             onChange={(event) => updateField("lecturer", event.target.value)}
-            placeholder="Lecturer name"
+            placeholder="Имя и должность специалиста"
             required
           />
         </label>
         <label className="field">
-          <span>Category</span>
+          <span>Раздел</span>
           <input
             value={form.category}
             onChange={(event) => updateField("category", event.target.value)}
-            placeholder="Course or category"
+            placeholder="Например, Основы ухода"
             required
           />
         </label>
         <label className="field">
-          <span>Status</span>
+          <span>Статус</span>
           <select
             value={form.status}
             onChange={(event) => updateField("status", event.target.value as Lecture["status"])}
           >
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
+            <option value="draft">Черновик</option>
+            <option value="published">Опубликовано</option>
           </select>
-        </label>
-        <label className="field">
-          <span>Existing video object path</span>
-          <input
-            value={form.videoUrl}
-            onChange={(event) => updateField("videoUrl", event.target.value)}
-            placeholder="/objects/optional-existing-video-path"
-          />
         </label>
         <label className={file ? "upload-dropzone active" : "upload-dropzone"}>
           <FileVideo aria-hidden="true" size={30} />
-          <span>{file ? file.name : "Optional video file"}</span>
+          <span>{file ? file.name : "Файл видео"}</span>
           <small>
             {file
-              ? `${(file.size / 1024 / 1024).toFixed(1)} MB selected`
-              : "If storage is not configured, leave this empty and create metadata only."}
+              ? `Выбран файл: ${(file.size / 1024 / 1024).toFixed(1)} МБ`
+              : "Выберите файл или оставьте поле пустым, чтобы добавить видео позже."}
           </small>
           <input
             type="file"
@@ -270,30 +267,29 @@ export function AdminPage() {
             disabled={createMutation.isPending}
           >
             <RefreshCw aria-hidden="true" size={18} />
-            Refresh
+            Обновить
           </button>
           <button className="button primary" type="submit" disabled={createMutation.isPending}>
             {createMutation.isPending ? (
-              "Saving..."
+              "Сохраняем..."
             ) : (
               <>
                 <Save aria-hidden="true" size={18} />
-                Save lecture
+                Сохранить материал
               </>
             )}
           </button>
         </div>
       </form>
 
-      <section className="admin-list" aria-label="Existing lectures">
+      <section className="admin-list" aria-label="Добавленные материалы">
         <div className="section-heading">
-          <h2>Existing lectures</h2>
-          <span>{lectures.data?.source === "api" ? "Live database" : "Fallback data"}</span>
+          <h2>Добавленные материалы</h2>
         </div>
         {lectures.isLoading ? (
-          <div className="empty-state">Loading lectures...</div>
+          <div className="empty-state">Загружаем материалы...</div>
         ) : adminLectures.length === 0 ? (
-          <div className="empty-state">No lecture records yet.</div>
+          <div className="empty-state">Материалов пока нет.</div>
         ) : (
           adminLectures.map((lecture) => (
             <article className="admin-lecture" key={lecture.id}>
@@ -301,11 +297,11 @@ export function AdminPage() {
                 <p className="category-label">{lecture.category}</p>
                 <h3>{lecture.title}</h3>
                 <p>{lecture.lecturer} · {formatLectureDate(lecture.createdAt)}</p>
-                <p>{lecture.videoUrl ? lecture.videoUrl : "Metadata only: no video file configured"}</p>
+                <p>{lecture.videoUrl ? "Видео прикреплено" : "Видео пока не прикреплено"}</p>
               </div>
               <div className="admin-actions">
                 <span className={lecture.status === "published" ? "status published" : "status draft"}>
-                  {lecture.status}
+                  {lecture.status === "published" ? "Опубликовано" : "Черновик"}
                 </span>
                 <button
                   className="button secondary"
@@ -318,7 +314,7 @@ export function AdminPage() {
                   }
                   disabled={statusMutation.isPending}
                 >
-                  {lecture.status === "published" ? "Move to draft" : "Publish"}
+                  {lecture.status === "published" ? "В черновик" : "Опубликовать"}
                 </button>
                 <button
                   className="button danger"
@@ -327,7 +323,7 @@ export function AdminPage() {
                   disabled={deleteMutation.isPending}
                 >
                   <Trash2 aria-hidden="true" size={16} />
-                  Delete
+                  Удалить
                 </button>
               </div>
             </article>
@@ -348,6 +344,6 @@ async function uploadFile(uploadURL: string, file: File): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error(`Video upload failed: ${response.status}`);
+    throw new Error(`Не удалось загрузить видео: ${response.status}`);
   }
 }

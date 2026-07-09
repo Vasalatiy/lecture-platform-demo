@@ -1,7 +1,7 @@
 {
-  "name": "Lecture Platform",
-  "short_name": "Lectures",
-  "description": "A private mobile-first lecture video platform.",
+  "name": "Школа ухода за колостомой",
+  "short_name": "Школа ухода",
+  "description": "Закрытая видеоплатформа с обучающими материалами для пациентов.",
   "start_url": "/lectures",
   "scope": "/",
   "display": "standalone",

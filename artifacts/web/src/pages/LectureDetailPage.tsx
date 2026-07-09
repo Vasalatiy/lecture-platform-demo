@@ -15,22 +15,21 @@ export function LectureDetailPage() {
 
   if (lecture.isLoading) {
     return (
-      <AppShell eyebrow="Lecture" title="Loading">
-        <div className="empty-state">Loading lecture...</div>
+      <AppShell eyebrow="Видеоинструкция" title="Загрузка">
+        <div className="empty-state">Загружаем материал...</div>
       </AppShell>
     );
   }
 
   if (!data?.lecture) {
     return (
-      <AppShell eyebrow="Lecture" title="Not found">
+      <AppShell eyebrow="Видеоинструкция" title="Материал не найден">
         <Link href="/lectures" className="secondary-link">
           <ArrowLeft aria-hidden="true" size={18} />
-          Back to catalog
+          Вернуться к видео
         </Link>
         <div className="empty-state">
-          This lecture was not found from `/api/videos/:id` or the temporary demo fallback.
-          {data?.errorMessage ? ` Backend response: ${data.errorMessage}` : null}
+          Не удалось найти этот материал.
         </div>
       </AppShell>
     );
@@ -42,31 +41,29 @@ export function LectureDetailPage() {
     <AppShell eyebrow={activeLecture.category} title={activeLecture.title}>
       <Link href="/lectures" className="secondary-link">
         <ArrowLeft aria-hidden="true" size={18} />
-        Back
+        Назад
       </Link>
       {data.source === "mock" ? (
         <div className="notice warning">
-          Showing demo lecture metadata because `/api/videos/:id` is unavailable or requires sign-in.
-          {data.errorMessage ? <span> Backend response: {data.errorMessage}</span> : null}
+          Сейчас показан демонстрационный материал.
         </div>
       ) : null}
       <section className="video-panel">
         {!activeLecture.videoUrl ? (
           <div className="video-placeholder">
-            Video file is not attached to this lecture yet. Admins can add local development video storage from the upload form.
+            Видео к этому материалу пока не прикреплено
           </div>
         ) : stream.isLoading ? (
-          <div className="video-placeholder">Preparing video stream...</div>
+          <div className="video-placeholder">Подготавливаем видео...</div>
         ) : stream.data?.url ? (
           <video src={stream.data.url} controls playsInline preload="metadata" />
         ) : stream.error ? (
           <div className="video-placeholder">
-            Video stream is unavailable from `/api/videos/:id/stream-url`.
-            {stream.error instanceof Error ? ` ${stream.error.message}` : null}
+            Не удалось загрузить видео.
           </div>
         ) : (
           <div className="video-placeholder">
-            Video playback requires a live backend lecture and `/api/videos/:id/stream-url`.
+            Видео к этому материалу пока недоступно.
           </div>
         )}
       </section>
@@ -74,14 +71,14 @@ export function LectureDetailPage() {
         <div className="metadata-row detail">
           <span>
             <UserRound aria-hidden="true" size={16} />
-            {activeLecture.lecturer}
+            Специалист / автор материала: {activeLecture.lecturer}
           </span>
           <span>
             <CalendarDays aria-hidden="true" size={16} />
             {formatLectureDate(activeLecture.createdAt)}
           </span>
         </div>
-        <h2>About this lecture</h2>
+        <h2>О материале</h2>
         <p>{activeLecture.description}</p>
       </section>
     </AppShell>

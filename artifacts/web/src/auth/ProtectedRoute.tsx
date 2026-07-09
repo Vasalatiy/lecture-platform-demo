@@ -8,8 +8,8 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
   if (!isLoaded) {
     return (
-      <AppShell eyebrow="Private access" title="Checking session">
-        <div className="empty-state">Checking your sign-in session...</div>
+      <AppShell eyebrow="Школа ухода за колостомой" title="Проверяем вход">
+        <div className="empty-state">Проверяем вашу сессию...</div>
       </AppShell>
     );
   }
@@ -23,17 +23,18 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
 export function SignInPrompt() {
   return (
-    <AppShell eyebrow="Private access" title="Sign in required">
+    <AppShell eyebrow="Школа ухода за колостомой" title="Требуется вход">
       <section className="login-panel">
         <div className="notice warning">
-          This lecture platform is private. Sign in to load real lectures from the backend API.
+          Это закрытая платформа. Войдите, чтобы смотреть обучающие материалы по
+          уходу за колостомой.
         </div>
         <div className="button-row">
           <Link href="/login" className="primary-link">
-            Sign in
+            Войти
           </Link>
           <Link href="/sign-up" className="secondary-link">
-            Create account
+            Создать аккаунт
           </Link>
         </div>
       </section>
