@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronRight, UserRound } from "lucide-react";
+import { CalendarDays, ChevronRight, FileText, PlayCircle, UserRound } from "lucide-react";
 import type { Lecture } from "../api/client";
 import { formatLectureDate } from "../lib/format";
 import { Link } from "../lib/router";
@@ -7,9 +7,13 @@ export function LectureCard({ lecture }: { lecture: Lecture }) {
   return (
     <article className="lecture-card">
       <div className="card-media">
+        {lecture.videoUrl ? <PlayCircle aria-hidden="true" size={34} /> : <FileText aria-hidden="true" size={34} />}
         <span>{lecture.category}</span>
       </div>
       <div className="card-body">
+        <span className={lecture.videoUrl ? "content-badge video" : "content-badge material"}>
+          {lecture.videoUrl ? "Видео" : "Материал"}
+        </span>
         <h2>{lecture.title}</h2>
         <p className="card-description">{lecture.description}</p>
         <div className="metadata-row">

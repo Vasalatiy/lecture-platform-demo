@@ -41,7 +41,7 @@ export function LectureDetailPage() {
     <AppShell eyebrow={activeLecture.category} title={activeLecture.title}>
       <Link href="/lectures" className="secondary-link">
         <ArrowLeft aria-hidden="true" size={18} />
-        Назад
+        Назад к материалам
       </Link>
       {data.source === "mock" ? (
         <div className="notice warning">

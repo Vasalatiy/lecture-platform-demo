@@ -8,10 +8,10 @@ export function LecturesPage() {
   const data = lectures.data;
 
   return (
-    <AppShell eyebrow="Школа ухода за колостомой" title="Обучающие видео">
+    <AppShell eyebrow="Обучающие материалы для пациентов и их родственников" title="Школа ухода за колостомой">
       <p className="helper-note">
-        Материалы для пациентов и их близких: понятные видеоинструкции по уходу за
-        колостомой.
+        Короткие видео и материалы помогают разобраться с базовыми правилами ухода,
+        заменой калоприёмника и профилактикой осложнений.
       </p>
       <div className="catalog-tools">
         <div className="search-box">
@@ -29,7 +29,9 @@ export function LecturesPage() {
         {lectures.isLoading ? (
           <div className="empty-state">Загружаем материалы...</div>
         ) : data?.lectures.length === 0 ? (
-          <div className="empty-state">Пока нет опубликованных материалов</div>
+          <div className="empty-state">
+            Материалы пока не добавлены. После публикации они появятся на этой странице.
+          </div>
         ) : (
           data?.lectures.map((lecture) => <LectureCard key={lecture.id} lecture={lecture} />)
         )}
