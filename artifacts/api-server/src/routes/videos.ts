@@ -5,7 +5,10 @@ import { usersTable, videosTable } from "@workspace/db";
 import { eq, ilike, and, sql } from "drizzle-orm";
 import { ObjectStorageService } from "../lib/objectStorage";
 import { getOrCreateUser } from "./auth";
-import { getR2PlaybackUrl, isR2ObjectPath } from "../lib/r2Storage";
+import {
+  getS3CompatiblePlaybackUrl,
+  isS3CompatibleObjectPath,
+} from "../lib/s3CompatibleStorage";
 
 const router = Router();
 const storage = new ObjectStorageService();
@@ -226,8 +229,8 @@ router.get("/videos/:id/stream-url", requireAuth, async (req, res): Promise<void
       return;
     }
 
-    if (isR2ObjectPath(objectPath)) {
-      res.json({ url: await getR2PlaybackUrl(objectPath) });
+    if (isS3CompatibleObjectPath(objectPath)) {
+      res.json({ url: await getS3CompatiblePlaybackUrl(objectPath) });
       return;
     }
 

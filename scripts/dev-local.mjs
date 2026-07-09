@@ -17,7 +17,6 @@ const requiredApiVariables = [
   "PORT",
   "NODE_ENV",
   "STORAGE_DRIVER",
-  "LOCAL_STORAGE_DIR",
 ];
 
 function parseEnvFile(contents) {
@@ -66,6 +65,31 @@ function loadApiEnvironment(requiredVariables) {
   }
 
   return { ...process.env, ...localValues };
+}
+
+function validateStorageEnvironment(env) {
+  const requiredByDriver = {
+    local: ["LOCAL_STORAGE_DIR"],
+    r2: [
+      "R2_ACCOUNT_ID",
+      "R2_BUCKET_NAME",
+      "R2_ACCESS_KEY_ID",
+      "R2_SECRET_ACCESS_KEY",
+    ],
+    s3: [
+      "S3_ENDPOINT",
+      "S3_BUCKET_NAME",
+      "S3_ACCESS_KEY_ID",
+      "S3_SECRET_ACCESS_KEY",
+    ],
+  };
+  const required = requiredByDriver[env.STORAGE_DRIVER] ?? [];
+  const missing = required.filter((name) => !env[name]);
+  if (missing.length) {
+    throw new Error(
+      `Missing variables for STORAGE_DRIVER=${env.STORAGE_DRIVER}: ${missing.join(", ")}`,
+    );
+  }
 }
 
 function pnpmInvocation(args) {
@@ -175,6 +199,7 @@ async function main() {
   const required =
     mode === "db:push" ? ["DATABASE_URL"] : requiredApiVariables;
   const apiEnv = loadApiEnvironment(required);
+  if (mode !== "db:push") validateStorageEnvironment(apiEnv);
   console.log("[local] Backend environment loaded and validated (values hidden).");
 
   if (mode === "validate") return;

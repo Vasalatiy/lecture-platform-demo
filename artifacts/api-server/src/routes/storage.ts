@@ -13,7 +13,10 @@ import {
 } from "@workspace/api-zod";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 import { ObjectPermission } from "../lib/objectAcl";
-import { createR2Upload, isR2StorageEnabled } from "../lib/r2Storage";
+import {
+  createS3CompatibleUpload,
+  isS3CompatibleStorageEnabled,
+} from "../lib/s3CompatibleStorage";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
@@ -80,8 +83,8 @@ router.post("/storage/uploads/request-url", requireAdmin, async (req: Request, r
       return;
     }
 
-    if (isR2StorageEnabled()) {
-      const upload = await createR2Upload(name, contentType);
+    if (isS3CompatibleStorageEnabled()) {
+      const upload = await createS3CompatibleUpload(name, contentType);
       res.json(
         RequestUploadUrlResponse.parse({
           ...upload,
