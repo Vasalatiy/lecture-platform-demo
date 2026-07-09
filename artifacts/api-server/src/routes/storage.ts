@@ -13,6 +13,7 @@ import {
 } from "@workspace/api-zod";
 import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 import { ObjectPermission } from "../lib/objectAcl";
+import { createR2Upload, isR2StorageEnabled } from "../lib/r2Storage";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
@@ -79,6 +80,17 @@ router.post("/storage/uploads/request-url", requireAdmin, async (req: Request, r
       return;
     }
 
+    if (isR2StorageEnabled()) {
+      const upload = await createR2Upload(name, contentType);
+      res.json(
+        RequestUploadUrlResponse.parse({
+          ...upload,
+          metadata: { name, size, contentType },
+        }),
+      );
+      return;
+    }
+
     const uploadURL = await objectStorageService.getObjectEntityUploadURL();
     const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
 
@@ -109,7 +121,9 @@ router.put(
 
     purgeExpiredLocalUploads();
 
-    const pending = pendingLocalUploads.get(req.params.uploadId);
+    const rawUploadId = req.params.uploadId;
+    const uploadId = Array.isArray(rawUploadId) ? rawUploadId[0] : rawUploadId;
+    const pending = pendingLocalUploads.get(uploadId);
     if (!pending) {
       res.status(404).json({ error: "Upload URL expired or not found" });
       return;
@@ -129,7 +143,7 @@ router.put(
 
     await mkdir(path.dirname(pending.filePath), { recursive: true });
     await writeFile(pending.filePath, body);
-    pendingLocalUploads.delete(req.params.uploadId);
+    pendingLocalUploads.delete(uploadId);
     res.status(204).send();
   },
 );

@@ -1,4 +1,7 @@
 import express, { type Express } from "express";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import { clerkMiddleware } from "@clerk/express";
@@ -49,5 +52,22 @@ app.use(
 );
 
 app.use("/api", router);
+
+if (process.env.NODE_ENV === "production") {
+  const webDistDir = path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "../../web/dist",
+  );
+  const webIndex = path.join(webDistDir, "index.html");
+
+  if (existsSync(webIndex)) {
+    app.use(express.static(webDistDir));
+    app.get("/{*spaPath}", (_req, res) => {
+      res.sendFile(webIndex);
+    });
+  } else {
+    logger.warn({ webDistDir }, "Web production bundle was not found");
+  }
+}
 
 export default app;

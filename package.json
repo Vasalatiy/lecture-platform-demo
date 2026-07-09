@@ -5,10 +5,12 @@
   "scripts": {
     "preinstall": "node scripts/preinstall.mjs",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "build:render": "pnpm --filter @workspace/web build && pnpm --filter @workspace/api-server build",
     "dev:local": "node scripts/dev-local.mjs dev",
     "api:local": "node scripts/dev-local.mjs api",
     "web:local": "node scripts/dev-local.mjs web",
     "db:push:local": "node scripts/dev-local.mjs db:push",
+    "start:render": "pnpm --filter @workspace/api-server start",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },

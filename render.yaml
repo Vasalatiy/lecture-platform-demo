@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: colostomy-care-school
+    runtime: node
+    plan: free
+    buildCommand: npx pnpm@11.10.0 install --frozen-lockfile && npx pnpm@11.10.0 build:render
+    startCommand: npx pnpm@11.10.0 --filter @workspace/api-server start
+    healthCheckPath: /api/healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: NODE_ENV
+        value: production
+      - key: STORAGE_DRIVER
+        value: r2
+      - key: DATABASE_URL
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false

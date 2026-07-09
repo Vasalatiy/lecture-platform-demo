@@ -70,13 +70,14 @@ export function AdminPage() {
       let videoUrl = trimmed.videoUrl;
 
       if (file) {
+        const uploadContentType = getVideoContentType(file);
         const upload = await requestUploadUrl({
           name: file.name,
           size: file.size,
-          contentType: file.type || "application/octet-stream",
+          contentType: uploadContentType,
         });
 
-        await uploadFile(upload.uploadURL, file);
+        await uploadFile(upload.uploadURL, file, uploadContentType);
         videoUrl = upload.objectPath;
       }
 
@@ -334,12 +335,24 @@ export function AdminPage() {
   );
 }
 
-async function uploadFile(uploadURL: string, file: File): Promise<void> {
+function getVideoContentType(file: File): string {
+  const extension = file.name.split(".").pop()?.toLowerCase();
+  if (extension === "mp4") return "video/mp4";
+  if (extension === "webm") return "video/webm";
+  if (extension === "mov") return "video/quicktime";
+  return file.type || "application/octet-stream";
+}
+
+async function uploadFile(
+  uploadURL: string,
+  file: File,
+  contentType: string,
+): Promise<void> {
   const response = await fetch(uploadURL, {
     method: "PUT",
     body: file,
     headers: {
-      "Content-Type": file.type || "application/octet-stream",
+      "Content-Type": contentType,
     },
   });
 

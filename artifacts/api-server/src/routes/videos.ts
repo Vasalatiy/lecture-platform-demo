@@ -5,6 +5,7 @@ import { usersTable, videosTable } from "@workspace/db";
 import { eq, ilike, and, sql } from "drizzle-orm";
 import { ObjectStorageService } from "../lib/objectStorage";
 import { getOrCreateUser } from "./auth";
+import { getR2PlaybackUrl, isR2ObjectPath } from "../lib/r2Storage";
 
 const router = Router();
 const storage = new ObjectStorageService();
@@ -222,6 +223,11 @@ router.get("/videos/:id/stream-url", requireAuth, async (req, res): Promise<void
     const objectPath = video.videoUrl;
     if (!objectPath) {
       res.status(409).json({ error: "Video file is not configured for this lecture" });
+      return;
+    }
+
+    if (isR2ObjectPath(objectPath)) {
+      res.json({ url: await getR2PlaybackUrl(objectPath) });
       return;
     }
 
