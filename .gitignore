@@ -28,8 +28,12 @@ node_modules
 !.vscode/extensions.json
 
 # misc
+.env
+.env.local
 *.env.local
 *.env.*.local
+artifacts/api-server/.env.local
+artifacts/web/.env.local
 /.sass-cache
 /connect.lock
 /coverage
