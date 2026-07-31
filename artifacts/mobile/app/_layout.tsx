@@ -17,9 +17,9 @@ import { tokenCache } from "@clerk/expo/token-cache";
 import { setBaseUrl } from "@workspace/api-client-react";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { apiOrigin } from "@/lib/apiUrl";
 
-const domain = process.env.EXPO_PUBLIC_DOMAIN;
-if (domain) setBaseUrl(`https://${domain}`);
+setBaseUrl(apiOrigin);
 
 SplashScreen.preventAutoHideAsync();
 

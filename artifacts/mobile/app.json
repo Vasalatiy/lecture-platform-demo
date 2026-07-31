@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Lecture Platform",
-    "slug": "mobile",
+    "name": "Школа ухода за колостомой",
+    "slug": "colostomy-school",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "colostomyschool",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -16,7 +16,9 @@
     "ios": {
       "supportsTablet": false
     },
-    "android": {},
+    "android": {
+      "package": "com.vasalatiy.colostomyschool.dev"
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -28,11 +30,19 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-secure-store",
+      "@clerk/expo"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ad408791-d16a-44b2-8a6f-4b7b84538bd4"
+      }
+    },
+    "owner": "vasalatii_ilya"
   }
 }

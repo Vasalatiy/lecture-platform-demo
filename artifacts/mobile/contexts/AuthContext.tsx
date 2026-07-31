@@ -1,7 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { useAuth } from "@clerk/expo";
-import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
-import { useGetMe } from "@workspace/api-client-react";
+import {
+  getGetMeQueryKey,
+  setAuthTokenGetter,
+  useGetMe,
+} from "@workspace/api-client-react";
 
 export type UserRole = "admin" | "viewer";
 
@@ -35,7 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [getToken]);
 
   const { data, isLoading, refetch } = useGetMe({
-    query: { enabled: !!isSignedIn, retry: 1 },
+    query: {
+      queryKey: getGetMeQueryKey(),
+      enabled: !!isSignedIn,
+      retry: 1,
+    },
   });
 
   const user = data

@@ -11,8 +11,11 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
+import { useEvent } from "expo";
+import { useVideoPlayer, VideoView } from "expo-video";
 import { useGetVideo, useGetVideoStreamUrl } from "@workspace/api-client-react";
 import { useColors } from "@/hooks/useColors";
+import { resolveStreamUrl } from "@/lib/apiUrl";
 
 function formatDate(iso: string) {
   try {
@@ -22,25 +25,50 @@ function formatDate(iso: string) {
   }
 }
 
-function VideoPlayer({ url }: { url: string }) {
-  if (Platform.OS === "web") {
+function WebVideoPlayer({ url }: { url: string }) {
+  return (
+    <video
+      src={url}
+      controls
+      style={{ width: "100%", height: "100%", objectFit: "contain", backgroundColor: "#000" }}
+      playsInline
+      preload="metadata"
+    />
+  );
+}
+
+function NativeVideoPlayer({ url }: { url: string }) {
+  const player = useVideoPlayer({ uri: url }, (instance) => {
+    instance.loop = false;
+  });
+  const statusEvent = useEvent(player, "statusChange", {
+    status: player.status,
+  });
+
+  if (statusEvent.status === "error") {
     return (
-      <video
-        src={url}
-        controls
-        style={{ width: "100%", height: "100%", objectFit: "contain", backgroundColor: "#000" }}
-        playsInline
-        preload="metadata"
-      />
+      <Text style={{ color: "#fff", padding: 20, textAlign: "center" }}>
+        {statusEvent.error?.message ?? "Unable to play this video."}
+      </Text>
     );
   }
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Feather name="film" size={40} color="rgba(255,255,255,0.4)" />
-      <Text style={{ color: "rgba(255,255,255,0.6)", marginTop: 12, fontFamily: "Inter_400Regular", fontSize: 14 }}>
-        Open in browser to watch
-      </Text>
-    </View>
+    <VideoView
+      player={player}
+      style={{ width: "100%", height: "100%" }}
+      nativeControls
+      contentFit="contain"
+      fullscreenOptions={{ enable: true }}
+    />
+  );
+}
+
+function VideoPlayer({ url }: { url: string }) {
+  return Platform.OS === "web" ? (
+    <WebVideoPlayer url={url} />
+  ) : (
+    <NativeVideoPlayer url={url} />
   );
 }
 
@@ -52,6 +80,19 @@ export default function LectureScreen() {
 
   const { data: video, isLoading: videoLoading } = useGetVideo(id ?? "");
   const { data: streamData, isLoading: streamLoading } = useGetVideoStreamUrl(id ?? "");
+
+  let playbackUrl: string | null = null;
+  let streamError: string | null = null;
+  if (streamData?.url) {
+    try {
+      playbackUrl = resolveStreamUrl(streamData.url);
+    } catch (error) {
+      streamError =
+        error instanceof Error ? error.message : "The video stream URL is invalid.";
+    }
+  } else if (!streamLoading) {
+    streamError = "Video unavailable";
+  }
 
   const topPad = Platform.OS === "web" ? 0 : insets.top;
 
@@ -121,12 +162,12 @@ export default function LectureScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.videoContainer}>
-        {streamData?.url ? (
-          <VideoPlayer url={streamData.url} />
+        {playbackUrl ? (
+          <VideoPlayer url={playbackUrl} />
         ) : streamLoading ? (
           <ActivityIndicator size="large" color="#fff" />
         ) : (
-          <Text style={styles.noVideoText}>Video unavailable</Text>
+          <Text style={styles.noVideoText}>{streamError}</Text>
         )}
       </View>
 

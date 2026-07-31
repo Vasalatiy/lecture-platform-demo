@@ -1,0 +1,12 @@
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "pnpm": "10.34.5",
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  }
+}
