@@ -27,7 +27,13 @@ Cloud Postgres providers commonly require `sslmode=require`. Local Docker Postgr
 
 ## Schema
 
-There are no checked-in migration files or seed scripts. The development schema command is Drizzle Kit `push`, which creates or updates tables from `lib/db/src/schema`.
+Versioned migrations are stored in `lib/db/drizzle`. The initial migration is a
+baseline for creating the current schema in a new, empty database. See
+`lib/db/MIGRATIONS.md` before generating or applying migrations.
+
+The existing `db:push:local` command remains available only as a legacy local
+development convenience. Do not use `drizzle-kit push` or `push-force` to change
+the production schema.
 
 Tables used by the current API:
 
