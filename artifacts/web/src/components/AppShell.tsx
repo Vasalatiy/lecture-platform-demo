@@ -36,8 +36,8 @@ export function AppShell({
         <div className="brand-lockup">
           <span className="brand-mark" aria-hidden="true">Ш</span>
           <div>
-            <p className="brand-name">Школа ухода за колостомой</p>
-            <p className="brand-subtitle">Материалы для пациентов</p>
+            <p className="brand-name">Школа ухода за трахеостомой</p>
+            <p className="brand-subtitle">Материалы для пациентов и родственников</p>
           </div>
         </div>
         {isLoaded && isSignedIn ? (

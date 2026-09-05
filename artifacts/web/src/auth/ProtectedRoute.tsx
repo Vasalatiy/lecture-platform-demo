@@ -8,7 +8,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
   if (!isLoaded) {
     return (
-      <AppShell eyebrow="Школа ухода за колостомой" title="Проверяем вход">
+      <AppShell eyebrow="Школа ухода за трахеостомой" title="Проверяем вход">
         <div className="empty-state">Проверяем вашу сессию...</div>
       </AppShell>
     );
@@ -23,11 +23,11 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
 export function SignInPrompt() {
   return (
-    <AppShell eyebrow="Школа ухода за колостомой" title="Требуется вход">
+    <AppShell eyebrow="Школа ухода за трахеостомой" title="Требуется вход">
       <section className="login-panel">
         <div className="notice warning">
-          Это закрытая платформа. Войдите, чтобы смотреть обучающие материалы по
-          уходу за колостомой.
+          Это закрытая платформа. Войдите, чтобы смотреть образовательные материалы
+          об уходе за трахеостомой.
         </div>
         <div className="button-row">
           <Link href="/login" className="primary-link">

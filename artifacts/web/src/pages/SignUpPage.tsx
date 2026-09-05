@@ -15,7 +15,7 @@ export function SignUpPage() {
 
   if (!isLoaded) {
     return (
-      <AppShell eyebrow="Школа ухода за колостомой" title="Проверяем вход">
+      <AppShell eyebrow="Школа ухода за трахеостомой" title="Проверяем вход">
         <div className="empty-state">Проверяем вашу сессию...</div>
       </AppShell>
     );
@@ -23,18 +23,18 @@ export function SignUpPage() {
 
   if (isSignedIn) {
     return (
-      <AppShell eyebrow="Школа ухода за колостомой" title="Вход выполнен">
+      <AppShell eyebrow="Школа ухода за трахеостомой" title="Вход выполнен">
         <div className="empty-state">Открываем обучающие видео...</div>
       </AppShell>
     );
   }
 
   return (
-    <AppShell eyebrow="Школа ухода за колостомой" title="Создать аккаунт">
+    <AppShell eyebrow="Школа ухода за трахеостомой" title="Создать аккаунт">
       <section className="login-panel">
         <div className="notice">
-          Создайте аккаунт, чтобы получить доступ к обучающим материалам для
-          пациентов и их близких.
+          Создайте аккаунт, чтобы получить доступ к образовательным материалам для
+          пациентов с трахеостомой и их родственников.
         </div>
         <div className="auth-actions">
           <SignUpButton mode="modal" fallbackRedirectUrl="/lectures" forceRedirectUrl="/lectures">

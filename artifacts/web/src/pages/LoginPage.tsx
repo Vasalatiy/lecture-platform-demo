@@ -15,7 +15,7 @@ export function LoginPage() {
 
   if (!isLoaded) {
     return (
-      <AppShell eyebrow="Школа ухода за колостомой" title="Проверяем вход">
+      <AppShell eyebrow="Школа ухода за трахеостомой" title="Проверяем вход">
         <div className="empty-state">Проверяем вашу сессию...</div>
       </AppShell>
     );
@@ -23,18 +23,18 @@ export function LoginPage() {
 
   if (isSignedIn) {
     return (
-      <AppShell eyebrow="Школа ухода за колостомой" title="Вход выполнен">
+      <AppShell eyebrow="Школа ухода за трахеостомой" title="Вход выполнен">
         <div className="empty-state">Открываем обучающие видео...</div>
       </AppShell>
     );
   }
 
   return (
-    <AppShell eyebrow="Школа ухода за колостомой" title="Войти">
+    <AppShell eyebrow="Школа ухода за трахеостомой" title="Войти">
       <section className="login-panel">
         <div className="notice">
-          Войдите, чтобы смотреть закрытые обучающие материалы по уходу за
-          колостомой. Платформа предназначена для пациентов и их близких.
+          Войдите, чтобы смотреть закрытые образовательные материалы об уходе за
+          трахеостомой. Платформа предназначена для пациентов и их родственников.
         </div>
         <div className="auth-actions">
           <SignInButton mode="modal" fallbackRedirectUrl="/lectures" forceRedirectUrl="/lectures">

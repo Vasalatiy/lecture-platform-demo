@@ -8,10 +8,10 @@ export function LecturesPage() {
   const data = lectures.data;
 
   return (
-    <AppShell eyebrow="Обучающие материалы для пациентов и их родственников" title="Школа ухода за колостомой">
+    <AppShell eyebrow="Обучающие материалы для пациентов и их родственников" title="Школа ухода за трахеостомой">
       <p className="helper-note">
-        Короткие видео и материалы помогают разобраться с базовыми правилами ухода,
-        заменой калоприёмника и профилактикой осложнений.
+        Короткие демонстрационные видео и материалы знакомят с темами ежедневного
+        ухода за трахеостомой и обращения за медицинской помощью.
       </p>
       <div className="catalog-tools">
         <div className="search-box">
@@ -21,11 +21,11 @@ export function LecturesPage() {
       </div>
       {data?.source === "mock" ? (
         <div className="notice">
-          Не удалось загрузить материалы. Пока можно посмотреть примеры
-          видеоинструкций.
+          Не удалось загрузить материалы. Пока можно посмотреть демонстрационные
+          образовательные материалы.
         </div>
       ) : null}
-      <section className="lecture-list" aria-label="Каталог обучающих видео">
+      <section className="lecture-list" aria-label="Каталог образовательных материалов">
         {lectures.isLoading ? (
           <div className="empty-state">Загружаем материалы...</div>
         ) : data?.lectures.length === 0 ? (
